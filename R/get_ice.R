@@ -20,8 +20,18 @@
 #'points(ice_and_snow, col = "red")
 #'@export
 get_ice <-  function(file='output.nc', snow.rm = TRUE, ...){
-  ice <- get_var(file, var_name = "blue_ice_thickness", ...)
-  ice[, 2] <- ice[, 2] + get_var(file, var_name = "white_ice_thickness", ...)[, 2]
+  nc_glm <- ncdf4::nc_open(file)
+  glm_vars <- names(nc_glm$var)
+  ncdf4::nc_close(nc_glm)
+   if("hsnow" %in% glm_vars){
+      ice <- get_var(file, var_name = "blue_ice_thickness", ...)
+      ice[, 2] <- ice[, 2] + get_var(file, var_name = "white_ice_thickness", ...)[, 2]
+      if (!snow.rm){
+    ice[, 2] <- ice[, 2] + get_var(file, var_name = "snow_thickness", ...)[, 2]
+      }
+   }else{
+    ice <- get_var(file, var_name = "hice", ...)
+    ice[, 2] <- ice[, 2] + get_var(file, var_name = "hwice", ...)[, 2]
   if (!snow.rm){
     ice[, 2] <- ice[, 2] + get_var(file, var_name = "hsnow", ...)[, 2]
   }
