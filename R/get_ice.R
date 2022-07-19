@@ -35,6 +35,7 @@ get_ice <-  function(file='output.nc', snow.rm = TRUE, ...){
   if (!snow.rm){
     ice[, 2] <- ice[, 2] + get_var(file, var_name = "hsnow", ...)[, 2]
   }
+     }
   colnames(ice)[2] <- 'ice(m)'
 
   return(ice)
